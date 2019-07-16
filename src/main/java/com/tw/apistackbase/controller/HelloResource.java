@@ -39,6 +39,15 @@ public class HelloResource {
         }
         return ResponseEntity.ok().build();
     }
+    @GetMapping(path = "/?gender=male")
+    public ResponseEntity getAllMaleEmployees(@PathVariable String gender) {
+        for (int i = 0; i < employeeList.size(); i++) {
+            if (employeeList.get(i).getGender() == gender) {
+                return ResponseEntity.ok(employeeList.get(i));
+            }
+        }
+        return ResponseEntity.ok().build();
+    }
 //    @PutMapping
 //    public  ResponseEntity putAEmployee(@RequestBody Employee employee){
 //        // Employee employee1 = employeeList.stream().filter(e -> e.getId() == employee.getId()).collect(Collectors.toList());

@@ -57,10 +57,17 @@ public class EmployeesTest {
 //	public void should_get_specific_page_employees_when_get_page_number_and_pageSize_number() throws Exception{
 //
 //	}
-//	@Test
-//	public void should_get_screen_all_male_employees_when_get_a_gender() throws Exception{
-//
-//	}
+	@Test
+	public void should_get_screen_all_male_employees_when_get_a_gender() throws Exception{
+		final MvcResult mvcResult = this.mockMvc.perform(get("/employees/?gender=male")).andExpect(status().isOk()).andReturn();
+		JSONArray jsonArray = new JSONArray(mvcResult.getResponse().getContentAsString());
+		assertEquals(1001,jsonArray.getJSONObject(0).getInt("id"));
+		assertEquals(20,jsonArray.getJSONObject(0).getInt("age"));
+		assertEquals("Zhangyi",jsonArray.getJSONObject(0).getString("name"));
+		assertEquals("male",jsonArray.getJSONObject(0).getString("gender"));
+		assertEquals(6000,jsonArray.getJSONObject(0).getInt("salary"));
+
+	}
 //	@Test
 //	public void should_add_an_employee_when_post_a_employee() throws Exception{
 //
