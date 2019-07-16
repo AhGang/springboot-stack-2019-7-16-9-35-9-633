@@ -1,10 +1,8 @@
 package com.tw.apistackbase.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,5 +36,38 @@ public class CompanyController {
             }
         }
         return ResponseEntity.ok().build();
+    }
+    @GetMapping(path = "/{id}/employees")
+    public ResponseEntity getASpecificEmployes(@PathVariable int id) {
+        for (int i = 0; i < companyList.size(); i++) {
+            if (companyList.get(i).getId() == id) {
+                return ResponseEntity.ok(companyList.get(i).getEmployees());
+            }
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping
+    public ResponseEntity createACompany(@RequestBody Company company){
+        companyList.add(company);
+        return ResponseEntity.status(HttpStatus.CREATED).body(company);
+    }
+    @PutMapping(path = "/{id}")
+    public  ResponseEntity putACompany(@RequestBody Company company){
+        for(int i = 0 ; i < companyList.size(); i ++){
+            if(companyList.get(i).getId() == company.getId()){
+                companyList.get(i).setCompanyName("google");
+            }
+        }
+        return ResponseEntity.ok(companyList);
+    }
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity deleteACompany(@PathVariable int id){
+        for(int i = 0 ; i < companyList.size(); i ++){
+            if(companyList.get(i).getId() == id){
+                companyList.get(i).setEmployees( new ArrayList<Employee>());
+            }
+        }
+        return ResponseEntity.ok(companyList);
     }
 }

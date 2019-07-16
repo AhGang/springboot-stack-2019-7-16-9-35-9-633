@@ -19,6 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -55,25 +59,50 @@ public class CompanyTest {
         assertEquals(employeeAJsonObject.toString(), jsonObject1.getJSONArray("employees").get(0).toString());
 
     }
-//    @Test
-//    public void should_get_a_specific_employees_when_get_an_company_id() throws Exception {}
+    @Test
+    public void should_get_a_specific_employees_when_get_an_company_id() throws Exception {
+        final MvcResult mvcResult = this.mockMvc.perform(get("/companies/1001/employees")).andExpect(status().isOk()).andReturn();
+        JSONArray jsonArray = new JSONArray(mvcResult.getResponse().getContentAsString());
+        Employee employeeA = new Employee(1001,"Zhangyi",20,"male",6000);
+        JSONObject employeeAJsonObject = new JSONObject(employeeA);
+        assertEquals(employeeAJsonObject.toString(), jsonArray.get(0).toString());
+    }
     //	@Test
 //	public void should_get_specific_page_employees_when_get_page_number_and_pageSize_number() throws Exception{
 //
 //	}
-//    @Test
-//    public void should_add_an_employee_when_post_a_employee() throws Exception {
-//
-//    }
-//
-//    @Test
-//    public void should_update_an_employee_when_put_a_employeeID() throws Exception {
-//
-//
-//    }
-//
-//    @Test
-//    public void should_delete_an_employee_when_delete_a_employeeID() throws Exception {
-//
-//    }
+    @Test
+    public void should_add_an_company_when_post_a_company() throws Exception {
+        Employee employeeA = new Employee(1003,"Zhangyi",20,"male",6000);
+        List<Employee> employeeList = new ArrayList<>(Arrays.asList(employeeA));
+        Company companyA = new Company("tengxun",200,employeeList,1003);
+
+        JSONObject companyAJsonObject = new JSONObject(companyA);
+        final MvcResult mvcResult = this.mockMvc.perform(post("/companies").contentType(MediaType.APPLICATION_PROBLEM_JSON_UTF8).content(companyAJsonObject.toString())).andExpect(status().isCreated()).andReturn();
+        JSONObject jsonObject = new JSONObject(mvcResult.getResponse().getContentAsString());
+        assertEquals("tengxun", jsonObject.getString("companyName"));
+        assertEquals(200, jsonObject.getInt("employeesNumber"));
+        assertEquals(1003, jsonObject.getInt("id"));
+    }
+
+    @Test
+    public void should_update_an_company_when_put_a_companyID() throws Exception {
+        Employee employeeA = new Employee(1001,"Zhangyi",20,"male",6000);
+        List<Employee> employeeList = new ArrayList<>(Arrays.asList(employeeA));
+        Company companyA = new Company("alibaba",200,employeeList,1001);
+        JSONObject companyAJsonObject = new JSONObject(companyA);
+        final MvcResult mvcResult = this.mockMvc.perform(put("/companies/1001").contentType(MediaType.APPLICATION_PROBLEM_JSON_UTF8).content(companyAJsonObject.toString())).andExpect(status().isOk()).andReturn();
+        JSONArray jsonArray = new JSONArray(mvcResult.getResponse().getContentAsString());
+        assertEquals(1001, jsonArray.getJSONObject(0).getInt("id"));
+        assertEquals("google", jsonArray.getJSONObject(0).getString("companyName"));
+
+    }
+
+    @Test
+    public void should_delete_an_company_when_delete_a_companyID() throws Exception {
+        final MvcResult mvcResult = this.mockMvc.perform(delete("/companies/1002")).andExpect(status().isOk()).andReturn();
+
+
+
+    }
 }

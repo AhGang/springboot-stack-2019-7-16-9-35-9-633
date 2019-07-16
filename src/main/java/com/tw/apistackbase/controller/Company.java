@@ -16,6 +16,9 @@ public class Company {
         this.id = id;
     }
 
+    public Company() {
+    }
+
 
     public String getCompanyName() {
         return companyName;
