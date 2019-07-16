@@ -19,15 +19,9 @@ public class HelloResource {
     Employee employeeB = new Employee(1002,"Zhanger",20,"female",7000);
     Employee employeeC = new Employee(1003,"Zhangsan",21,"male",7000);
     List<Employee> employeeList = new ArrayList<>(Arrays.asList(employeeA,employeeB,employeeC));
-//    private final Logger log = Logger.getLogger(this.getClass().getName());
-//
-//    @GetMapping(path = "/{userName}", produces = {"application/json"})
-//    public ResponseEntity<String> getAll(@PathVariable String userName) {
-//
-//        return ResponseEntity.ok("Hello:" + userName);
-//    }
+
     @GetMapping
-    public ResponseEntity getAll(){
+    public ResponseEntity getAllEmployees(){
         return ResponseEntity.ok(employeeList);
     }
 
