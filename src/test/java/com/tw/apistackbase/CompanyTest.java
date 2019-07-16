@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONString;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CompanyTest {
     @Autowired
     private MockMvc mockMvc;
+    List<Company> companyList = new ArrayList<>(Arrays.asList());
+    private void initCompanyList() {
+        for(int i = 0 ; i < 50; i++){
+            Employee employeeA = new Employee(1001,"Zhangyi",20,"male",6000);
+            Employee employeeB = new Employee(1002,"Zhanger",20,"female",7000);
+            Employee employeeC = new Employee(1003,"Zhangsan",21,"male",7000);
+            List<Employee> employeeList = new ArrayList<>(Arrays.asList(employeeA,employeeB,employeeC));
 
+            Company companyA = new Company("alibaba",200,employeeList,1001);
+            Company companyB = new Company("baidu",100,employeeList,1002);
+            companyList.add(companyA);
+            companyList.add(companyB);
+        }
+    }
     @Test
     public void should_get_companies_when_get_companies() throws Exception {
         final MvcResult mvcResult = this.mockMvc.perform(get("/companies")).andExpect(status().isOk()).andReturn();
         JSONArray jsonArray = new JSONArray(mvcResult.getResponse().getContentAsString());
-        assertEquals("alibaba", jsonArray.getJSONObject(0).getString("companyName"));
+        assertEquals("google", jsonArray.getJSONObject(0).getString("companyName"));
         assertEquals(200, jsonArray.getJSONObject(0).getInt("employeesNumber"));
         Employee employeeA = new Employee(1001,"Zhangyi",20,"male",6000);
         JSONObject employeeAJsonObject = new JSONObject(employeeA);
@@ -52,7 +66,7 @@ public class CompanyTest {
     public void should_get_a_specific_company_when_get_an_company_id() throws Exception {
         final MvcResult mvcResult = this.mockMvc.perform(get("/companies/1001")).andExpect(status().isOk()).andReturn();
         JSONObject jsonObject1 = new JSONObject(mvcResult.getResponse().getContentAsString());
-        assertEquals("alibaba", jsonObject1.getString("companyName"));
+        assertEquals("google", jsonObject1.getString("companyName"));
         assertEquals(200, jsonObject1.getInt("employeesNumber"));
         Employee employeeA = new Employee(1001,"Zhangyi",20,"male",6000);
         JSONObject employeeAJsonObject = new JSONObject(employeeA);
@@ -67,10 +81,6 @@ public class CompanyTest {
         JSONObject employeeAJsonObject = new JSONObject(employeeA);
         assertEquals(employeeAJsonObject.toString(), jsonArray.get(0).toString());
     }
-    //	@Test
-//	public void should_get_specific_page_employees_when_get_page_number_and_pageSize_number() throws Exception{
-//
-//	}
     @Test
     public void should_add_an_company_when_post_a_company() throws Exception {
         Employee employeeA = new Employee(1003,"Zhangyi",20,"male",6000);
@@ -102,7 +112,12 @@ public class CompanyTest {
     public void should_delete_an_company_when_delete_a_companyID() throws Exception {
         final MvcResult mvcResult = this.mockMvc.perform(delete("/companies/1002")).andExpect(status().isOk()).andReturn();
 
-
-
+    }
+    @Test
+    public void should_return_employees_when_give_page_and_pageSize() throws Exception {
+        initCompanyList();
+        final MvcResult mvcResult = this.mockMvc.perform(get("/companies?page=1&pageSize=5")).andExpect(status().isOk()).andReturn();
+        JSONArray jsonArray = new JSONArray(mvcResult.getResponse().getContentAsString());
+        Assertions.assertEquals(companyList.get(0).getId(),jsonArray.getJSONObject(0).get("id"));
     }
 }

@@ -14,13 +14,19 @@ import java.util.logging.Logger;
  */
 @RestController
 @RequestMapping("/employees")
-public class HelloResource {
+public class EmployController {
+
     Employee employeeA = new Employee(1001,"Zhangyi",20,"male",6000);
     Employee employeeB = new Employee(1002,"Zhanger",20,"female",7000);
     Employee employeeC = new Employee(1003,"Zhangsan",21,"male",7000);
     List<Employee> employeeList = new ArrayList<>(Arrays.asList(employeeA,employeeB,employeeC));
-
-    @GetMapping
+    private void initEmployeeList() {
+        for(int i = 0 ; i < 50; i++){
+            Employee employeeA = new Employee(1001,"Zhangyi",20,"male",6000);
+            employeeList.add(employeeA);
+        }
+    }
+    @GetMapping()
     public ResponseEntity getAllEmployees(){
         return ResponseEntity.ok(employeeList);
     }
@@ -32,7 +38,7 @@ public class HelloResource {
                 return ResponseEntity.ok(employeeList.get(i));
             }
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(employeeList);
     }
     @GetMapping(path = "/?gender=male")
     public ResponseEntity getAllMaleEmployees(@PathVariable String gender) {
@@ -43,6 +49,20 @@ public class HelloResource {
         }
         return ResponseEntity.ok().build();
     }
+    @GetMapping("/companies?page=1&pageSize=5")
+    public ResponseEntity getSpecificPageEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize) {
+        if(page!=null&&pageSize!=null){
+            initEmployeeList();
+            List<Employee> returnList=new ArrayList<>();
+            for(int i=page-1;i<pageSize+page-1;i++){
+                returnList.add(employeeList.get(i));
+            }
+            return ResponseEntity.ok().body(returnList);
+
+        }
+        return ResponseEntity.ok().body(employeeList);
+    }
+
     @PostMapping
     public ResponseEntity createAEmployee(@RequestBody Employee employee){
         employeeList.add(employee);

@@ -21,7 +21,19 @@ public class CompanyController {
     Company companyA = new Company("alibaba",200,employeeList,1001);
     Company companyB = new Company("baidu",100,employeeList,1002);
     List<Company> companyList = new ArrayList<>(Arrays.asList(companyA,companyB));
+    private void initCompanyList() {
+        for(int i = 0 ; i < 50; i++){
+            Employee employeeA = new Employee(1001,"Zhangyi",20,"male",6000);
+            Employee employeeB = new Employee(1002,"Zhanger",20,"female",7000);
+            Employee employeeC = new Employee(1003,"Zhangsan",21,"male",7000);
+            List<Employee> employeeList = new ArrayList<>(Arrays.asList(employeeA,employeeB,employeeC));
 
+            Company companyA = new Company("alibaba",200,employeeList,1001);
+            Company companyB = new Company("baidu",100,employeeList,1002);
+            companyList.add(companyA);
+            companyList.add(companyB);
+        }
+    }
 
     @GetMapping
     public ResponseEntity getAllCompanies(){
@@ -69,5 +81,18 @@ public class CompanyController {
             }
         }
         return ResponseEntity.ok(companyList);
+    }
+
+    public ResponseEntity getSpecificPageEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize) {
+        if(page!=null&&pageSize!=null){
+            initCompanyList();
+            List<Employee> returnList=new ArrayList<>();
+            for(int i=page-1;i<pageSize+page-1;i++){
+                returnList.add(employeeList.get(i));
+            }
+            return ResponseEntity.ok().body(returnList);
+
+        }
+        return ResponseEntity.ok().body(employeeList);
     }
 }
