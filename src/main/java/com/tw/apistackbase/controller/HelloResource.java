@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -14,7 +15,9 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/employees")
 public class HelloResource {
-    List<Employee> employeeList = new ArrayList<>();
+    Employee employeeA = new Employee(1001,"Zhangyi",20,"male",6000);
+    Employee employeeB = new Employee(1002,"Zhanger",20,"female",7000);
+    List<Employee> employeeList = new ArrayList<>(Arrays.asList(employeeA,employeeB));
 //    private final Logger log = Logger.getLogger(this.getClass().getName());
 //
 //    @GetMapping(path = "/{userName}", produces = {"application/json"})
@@ -24,14 +27,18 @@ public class HelloResource {
 //    }
     @GetMapping
     public ResponseEntity getAll(){
-        employeeList.add(new Employee(1001,"Zhangsan",20,"male",6000));
         return ResponseEntity.ok(employeeList);
     }
-//    @PostMapping
-//    public ResponseEntity createAEmployee(@RequestBody Employee employee){
-//        employeeList.add(employee);
-//        return ResponseEntity.status(HttpStatus.CREATED).build();
-//    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity getASpecificEmployee(@PathVariable int id) {
+        for (int i = 0; i < employeeList.size(); i++) {
+            if (employeeList.get(i).getId() == id) {
+                return ResponseEntity.ok(employeeList.get(i));
+            }
+        }
+        return ResponseEntity.ok().build();
+    }
 //    @PutMapping
 //    public  ResponseEntity putAEmployee(@RequestBody Employee employee){
 //        // Employee employee1 = employeeList.stream().filter(e -> e.getId() == employee.getId()).collect(Collectors.toList());

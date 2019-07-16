@@ -2,6 +2,7 @@ package com.tw.apistackbase;
 
 import com.tw.apistackbase.controller.Employee;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -37,14 +38,21 @@ public class EmployeesTest {
 		JSONArray jsonArray = new JSONArray(mvcResult.getResponse().getContentAsString());
 		assertEquals(1001,jsonArray.getJSONObject(0).getInt("id"));
 		assertEquals(20,jsonArray.getJSONObject(0).getInt("age"));
-		assertEquals("Zhangsan",jsonArray.getJSONObject(0).getString("name"));
+		assertEquals("Zhangyi",jsonArray.getJSONObject(0).getString("name"));
 		assertEquals("male",jsonArray.getJSONObject(0).getString("gender"));
 		assertEquals(6000,jsonArray.getJSONObject(0).getInt("salary"));
 	}
-//	@Test
-//	public void should_get_a_specific_employee_when_get_an_employee_id() throws Exception{
-//
-//	}
+	@Test
+	public void should_get_a_specific_employee_when_get_an_employee_id() throws Exception{
+		final MvcResult mvcResult = this.mockMvc.perform(get("/employees/1002")).andExpect(status().isOk()).andReturn();
+		JSONObject jsonObject = new JSONObject(mvcResult.getResponse().getContentAsString());
+		assertEquals(1002,jsonObject.getInt("id"));
+		assertEquals(20,jsonObject.getInt("age"));
+		assertEquals("Zhanger",jsonObject.getString("name"));
+		assertEquals("female",jsonObject.getString("gender"));
+		assertEquals(7000,jsonObject.getInt("salary"));
+
+	}
 //	@Test
 //	public void should_get_specific_page_employees_when_get_page_number_and_pageSize_number() throws Exception{
 //
