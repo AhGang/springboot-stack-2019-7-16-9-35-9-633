@@ -46,6 +46,13 @@ public class CompanyTest {
     }
     @Test
     public void should_get_a_specific_company_when_get_an_company_id() throws Exception {
+        final MvcResult mvcResult = this.mockMvc.perform(get("/companies/1001")).andExpect(status().isOk()).andReturn();
+        JSONObject jsonObject1 = new JSONObject(mvcResult.getResponse().getContentAsString());
+        assertEquals("alibaba", jsonObject1.getString("companyName"));
+        assertEquals(200, jsonObject1.getInt("employeesNumber"));
+        Employee employeeA = new Employee(1001,"Zhangyi",20,"male",6000);
+        JSONObject employeeAJsonObject = new JSONObject(employeeA);
+        assertEquals(employeeAJsonObject.toString(), jsonObject1.getJSONArray("employees").get(0).toString());
 
     }
 //    @Test
