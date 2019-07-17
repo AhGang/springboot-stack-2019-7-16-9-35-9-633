@@ -27,42 +27,6 @@ public class EmployController {
             employeeList.add(employeeA);
         }
     }
-//    @GetMapping()
-//    public ResponseEntity getAllEmployees(){
-//        return ResponseEntity.ok(employeeList);
-//    }
-
-    @GetMapping(path = "/{id}")
-    public ResponseEntity getASpecificEmployee(@PathVariable int id) {
-        for (int i = 0; i < employeeList.size(); i++) {
-            if (employeeList.get(i).getId() == id) {
-                return ResponseEntity.ok(employeeList.get(i));
-            }
-        }
-        return ResponseEntity.ok(employeeList);
-    }
-//    @GetMapping(path = "/?gender=male")
-//    public ResponseEntity getAllMaleEmployees(@PathVariable String gender) {
-//        for (int i = 0; i < employeeList.size(); i++) {
-//            if (employeeList.get(i).getGender() == gender) {
-//                return ResponseEntity.ok(employeeList.get(i));
-//            }
-//        }
-//        return ResponseEntity.ok().build();
-//    }
-//    @GetMapping("/companies?page=1&pageSize=5")
-//    public ResponseEntity getSpecificPageEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize) {
-//        if(page!=null&&pageSize!=null){
-//            initEmployeeList();
-//            List<Employee> returnList=new ArrayList<>();
-//            for(int i=page-1;i<pageSize+page-1;i++){
-//                returnList.add(employeeList.get(i));
-//            }
-//            return ResponseEntity.ok().body(returnList);
-//
-//        }
-//        return ResponseEntity.ok().body(employeeList);
-//    }
     @GetMapping()
     public ResponseEntity getEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize,@RequestParam(required = false) String gender){
         initEmployeeList();
@@ -80,6 +44,15 @@ public class EmployController {
         return ResponseEntity.ok().body(employeeList);
     }
 
+    @GetMapping(path = "/{id}")
+    public ResponseEntity getASpecificEmployee(@PathVariable int id) {
+        for (int i = 0; i < employeeList.size(); i++) {
+            if (employeeList.get(i).getId() == id) {
+                return ResponseEntity.ok(employeeList.get(i));
+            }
+        }
+        return ResponseEntity.ok(employeeList);
+    }
 
     @PostMapping
     public ResponseEntity createAEmployee(@RequestBody Employee employee){
@@ -87,7 +60,7 @@ public class EmployController {
         return ResponseEntity.status(HttpStatus.CREATED).body(employee);
     }
     @PutMapping(path = "/{id}")
-    public  ResponseEntity put(@RequestBody Employee employee){
+    public  ResponseEntity putASpecificEmployee(@RequestBody Employee employee){
         // Employee employee1 = employeeList.stream().filter(e -> e.getId() == employee.getId()).collect(Collectors.toList());
         for(int i = 0 ; i < employeeList.size(); i ++){
             if(employeeList.get(i).getId() == employee.getId()){
@@ -97,7 +70,7 @@ public class EmployController {
         return ResponseEntity.ok(employeeList);
     }
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity deleteAEmployee(@PathVariable int id){
+    public ResponseEntity deleteASpecificEmployee(@PathVariable int id){
         for(int i = 0 ; i < employeeList.size(); i ++){
             if(employeeList.get(i).getId() == id){
                 employeeList.remove(employeeList.get(i));

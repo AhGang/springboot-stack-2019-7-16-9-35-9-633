@@ -35,14 +35,22 @@ public class CompanyController {
             companyList.add(companyB);
         }
     }
+    @GetMapping()
+    public ResponseEntity getEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize) {
+        initCompanyList();
+        if (page != null && pageSize != null) {
+            List<Company> returnList = new ArrayList<>();
+            for (int i = page - 1; i < pageSize + page - 1; i++) {
+                returnList.add(companyList.get(i));
+            }
+            return ResponseEntity.ok().body(returnList);
 
-//    @GetMapping
-//    public ResponseEntity getAllCompanies(){
-//        return ResponseEntity.ok(companyList);
-//    }
+        }
+        return ResponseEntity.ok().body(companyList);
 
+    }
     @GetMapping(path = "/{id}")
-    public ResponseEntity getASpecificCompanies(@PathVariable int id) {
+    public ResponseEntity getASpecificCompany(@PathVariable int id) {
         for (int i = 0; i < companyList.size(); i++) {
             if (companyList.get(i).getId() == id) {
                 return ResponseEntity.ok(companyList.get(i));
@@ -51,7 +59,7 @@ public class CompanyController {
         return ResponseEntity.ok().build();
     }
     @GetMapping(path = "/{id}/employees")
-    public ResponseEntity getASpecificEmployes(@PathVariable int id) {
+    public ResponseEntity getASpecificCompanyEmployes(@PathVariable int id) {
         for (int i = 0; i < companyList.size(); i++) {
             if (companyList.get(i).getId() == id) {
                 return ResponseEntity.ok(companyList.get(i).getEmployees());
@@ -66,7 +74,7 @@ public class CompanyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(company);
     }
     @PutMapping(path = "/{id}")
-    public  ResponseEntity putACompany(@RequestBody Company company){
+    public  ResponseEntity putASpecificCompany(@RequestBody Company company){
         for(int i = 0 ; i < companyList.size(); i ++){
             if(companyList.get(i).getId() == company.getId()){
                 companyList.get(i).setCompanyName("google");
@@ -75,39 +83,12 @@ public class CompanyController {
         return ResponseEntity.ok(companyList);
     }
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity deleteACompany(@PathVariable int id){
+    public ResponseEntity deleteASpecificCompany(@PathVariable int id){
         for(int i = 0 ; i < companyList.size(); i ++){
             if(companyList.get(i).getId() == id){
                 companyList.get(i).setEmployees( new ArrayList<Employee>());
             }
         }
         return ResponseEntity.ok(companyList);
-    }
-
-//    public ResponseEntity getSpecificPageEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize) {
-//        if(page!=null&&pageSize!=null){
-//            initCompanyList();
-//            List<Employee> returnList=new ArrayList<>();
-//            for(int i=page-1;i<pageSize+page-1;i++){
-//                returnList.add(employeeList.get(i));
-//            }
-//            return ResponseEntity.ok().body(returnList);
-//
-//        }
-//        return ResponseEntity.ok().body(employeeList);
-//    }
-    @GetMapping()
-    public ResponseEntity getEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize) {
-        initCompanyList();
-        if (page != null && pageSize != null) {
-            List<Company> returnList = new ArrayList<>();
-            for (int i = page - 1; i < pageSize + page - 1; i++) {
-                returnList.add(companyList.get(i));
-            }
-            return ResponseEntity.ok().body(returnList);
-
-        }
-        return ResponseEntity.ok().body(companyList);
-
     }
 }
