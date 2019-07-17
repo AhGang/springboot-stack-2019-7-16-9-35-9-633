@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Created by jxzhong on 18/08/2017.
@@ -26,10 +27,10 @@ public class EmployController {
             employeeList.add(employeeA);
         }
     }
-    @GetMapping()
-    public ResponseEntity getAllEmployees(){
-        return ResponseEntity.ok(employeeList);
-    }
+//    @GetMapping()
+//    public ResponseEntity getAllEmployees(){
+//        return ResponseEntity.ok(employeeList);
+//    }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity getASpecificEmployee(@PathVariable int id) {
@@ -40,19 +41,32 @@ public class EmployController {
         }
         return ResponseEntity.ok(employeeList);
     }
-    @GetMapping(path = "/?gender=male")
-    public ResponseEntity getAllMaleEmployees(@PathVariable String gender) {
-        for (int i = 0; i < employeeList.size(); i++) {
-            if (employeeList.get(i).getGender() == gender) {
-                return ResponseEntity.ok(employeeList.get(i));
-            }
-        }
-        return ResponseEntity.ok().build();
-    }
-    @GetMapping("/companies?page=1&pageSize=5")
-    public ResponseEntity getSpecificPageEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize) {
+//    @GetMapping(path = "/?gender=male")
+//    public ResponseEntity getAllMaleEmployees(@PathVariable String gender) {
+//        for (int i = 0; i < employeeList.size(); i++) {
+//            if (employeeList.get(i).getGender() == gender) {
+//                return ResponseEntity.ok(employeeList.get(i));
+//            }
+//        }
+//        return ResponseEntity.ok().build();
+//    }
+//    @GetMapping("/companies?page=1&pageSize=5")
+//    public ResponseEntity getSpecificPageEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize) {
+//        if(page!=null&&pageSize!=null){
+//            initEmployeeList();
+//            List<Employee> returnList=new ArrayList<>();
+//            for(int i=page-1;i<pageSize+page-1;i++){
+//                returnList.add(employeeList.get(i));
+//            }
+//            return ResponseEntity.ok().body(returnList);
+//
+//        }
+//        return ResponseEntity.ok().body(employeeList);
+//    }
+    @GetMapping()
+    public ResponseEntity getEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize,@RequestParam(required = false) String gender){
+        initEmployeeList();
         if(page!=null&&pageSize!=null){
-            initEmployeeList();
             List<Employee> returnList=new ArrayList<>();
             for(int i=page-1;i<pageSize+page-1;i++){
                 returnList.add(employeeList.get(i));
@@ -60,8 +74,12 @@ public class EmployController {
             return ResponseEntity.ok().body(returnList);
 
         }
+        if(gender!=null){
+            return ResponseEntity.ok().body(employeeList.stream().filter(ee->ee.getGender().equals("male")).collect(Collectors.toList()));
+        }
         return ResponseEntity.ok().body(employeeList);
     }
+
 
     @PostMapping
     public ResponseEntity createAEmployee(@RequestBody Employee employee){
