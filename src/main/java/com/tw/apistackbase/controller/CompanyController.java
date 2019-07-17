@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/companies")
@@ -35,10 +36,10 @@ public class CompanyController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity getAllCompanies(){
-        return ResponseEntity.ok(companyList);
-    }
+//    @GetMapping
+//    public ResponseEntity getAllCompanies(){
+//        return ResponseEntity.ok(companyList);
+//    }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity getASpecificCompanies(@PathVariable int id) {
@@ -83,16 +84,30 @@ public class CompanyController {
         return ResponseEntity.ok(companyList);
     }
 
-    public ResponseEntity getSpecificPageEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize) {
-        if(page!=null&&pageSize!=null){
-            initCompanyList();
-            List<Employee> returnList=new ArrayList<>();
-            for(int i=page-1;i<pageSize+page-1;i++){
-                returnList.add(employeeList.get(i));
+//    public ResponseEntity getSpecificPageEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize) {
+//        if(page!=null&&pageSize!=null){
+//            initCompanyList();
+//            List<Employee> returnList=new ArrayList<>();
+//            for(int i=page-1;i<pageSize+page-1;i++){
+//                returnList.add(employeeList.get(i));
+//            }
+//            return ResponseEntity.ok().body(returnList);
+//
+//        }
+//        return ResponseEntity.ok().body(employeeList);
+//    }
+    @GetMapping()
+    public ResponseEntity getEmployees(@RequestParam(required = false) Integer page,@RequestParam(required = false) Integer pageSize) {
+        initCompanyList();
+        if (page != null && pageSize != null) {
+            List<Company> returnList = new ArrayList<>();
+            for (int i = page - 1; i < pageSize + page - 1; i++) {
+                returnList.add(companyList.get(i));
             }
             return ResponseEntity.ok().body(returnList);
 
         }
-        return ResponseEntity.ok().body(employeeList);
+        return ResponseEntity.ok().body(companyList);
+
     }
 }
